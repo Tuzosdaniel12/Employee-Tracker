@@ -37,9 +37,12 @@ where first_name = "Christian" AND last_name = "Eckenrode";
 --use this to have a nice TABLE 
 USE employee_db;
 
-SELECT e.employee_id, e.first_name, e.last_name,r.title,r.salary,d.departament_name
+SELECT e.employee_id, e.first_name, e.last_name,r.title,r.salary, d.departament_name, concat(em.first_name," ",em.last_name) as manager 
 FROM employee e
 INNER JOIN role r
 ON e.id_role = r.id_role
 INNER JOIN departament d
-ON d.departament_id = r.departament_id;
+ON d.departament_id = r.departament_id
+LEFT JOIN employee em
+ON e.manager_id = em.employee_id
+ORDER BY e.employee_id;
