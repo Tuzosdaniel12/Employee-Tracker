@@ -1,3 +1,5 @@
+const bd = require("./db");
+
 
 
 

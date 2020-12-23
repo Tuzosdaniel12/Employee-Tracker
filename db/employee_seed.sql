@@ -1,5 +1,6 @@
 USE employee_db;
 
+--add departaments 
 INSERT INTO departament(name)
 VALUES
 ("Engineering"),
@@ -7,6 +8,7 @@ VALUES
 ("Finace"),
 ("Legal");
 
+--add roles
 INSERT INTO role(departament_id, title, salary)
 VALUES
 (1,"Lead Engineer",150000),
@@ -17,7 +19,7 @@ VALUES
 (4,"legal Team Lead", 250000),
 (4,"Lawyer", 190000);
 
-
+--add employees
 INSERT INTO employee(id_role, first_name, last_name)
 VALUES
 (3,"Jonh","Doe"),
@@ -29,10 +31,18 @@ VALUES
 (7,"Tom","Allen"),
 (1,"Christian","Eckenrode");
 
---use this to update manger to employee
+--use this to update manger to employee 
+--or update employee in general
 update employee 
 set manager_id = 2 
 where first_name = "Christian" AND last_name = "Eckenrode";
+
+--use this to see each tables
+
+SELECT * FROM departamens
+SELECT * FROM roles
+SELECT * FROM employess
+
 
 --use this to have a nice TABLE 
 USE employee_db;
