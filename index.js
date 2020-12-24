@@ -18,16 +18,16 @@ const initialContact = async() =>{
     const {action} = await promptUser(q.WhatWouldYouLikeToDo());
 
     switch (action) {
-        case "ADD_EMPLOYEES":
+        case "ADD_EMPLOYEE":
             addEmployee();
             break;
   
-        case "ADD_DEPARTMENTS":
-            addEmployee();
+        case "ADD_DEPARTMENT":
+            addDepartment();
             break;
   
-        case "ADD_ROLES":
-            rangeSearch();
+        case "ADD_ROLE":
+            addRole();
             break;
         case "VIEW_EMPLOYEE":
         case "VIEW_ROLE":
@@ -59,9 +59,32 @@ const addEmployee = async () =>{
     }
 }
 //add role
+const addRole = async () => {
+    const{id,title,salary} = await promptUser(q.askRoleQ());
+    
+    try{
+        const addedRole = await db.addRole(id,title,salary)
 
+        console.log(addedRole.affectedRows + " product inserted!\n")
+        viewTable("role");
+
+    }catch(err){
+        console.error(err);
+    }
+
+}
 //add department
+const addDepartment = async () =>{
+    const{deptName} = await promptUser(q.askDepartmentQ());
 
+    try{
+        const addedDep = await db.addDepartment(deptName);
+        console.log(addedDep.affectedRows + " product inserted!\n")
+        viewTable("department");
+    }catch(err){
+        console.error(err);
+    }
+}
 //insert into employee
 
 //

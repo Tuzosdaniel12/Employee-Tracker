@@ -1,11 +1,6 @@
 const connection = require("./connection");
 
 module.exports = {
-    //show all the departaments;
-    getTable(tableName){
-
-        return connection.query(`SELECT * FROM ?;`, [tableName]);
-    },
     //get a single table of all
     getCombinedTables(){
         return connection.query(
@@ -40,6 +35,22 @@ module.exports = {
             first_name: name,
             last_name: last,
             manager_id:managerId
+        });
+    },
+    addRole(id,title,salary){
+        return connection.query(
+        `INSERT INTO role SET?`,
+        {
+            department_id: id,
+            title: title,
+            salary: salary,
+        });
+    },
+    addDepartment(deptName){
+        return connection.query(
+        `INSERT INTO department SET?`,
+        {
+            department_name: deptName,
         });
     },
 
