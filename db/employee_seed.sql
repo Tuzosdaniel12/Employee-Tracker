@@ -9,7 +9,7 @@ VALUES
 ("Legal");
 
 --add roles
-INSERT INTO role(departament_id, title, salary)
+INSERT INTO role(department_id, title, salary)
 VALUES
 (1,"Lead Engineer",150000),
 (1,"Software Engineer",12000),
