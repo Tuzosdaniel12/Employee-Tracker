@@ -40,7 +40,16 @@ const initialContact = async() =>{
             break;
         case "VIEW_EMPLOYEE_BY_MANAGER":
             viewEmpByMan();
-            break;    
+            break;
+
+        case "CHANGE_EMPLOYEEs_ROLE":
+            updateEmployeeRoles();
+            break; 
+
+        case "CHANGE_EMPLOYEEs_MANAGER":
+            updateEmpManager();
+            break; 
+            
         default:
               db.endConnection();
             break;
@@ -87,16 +96,41 @@ const addDepartment = async () =>{
         console.error(err);
     }
 }
-//insert into employee
+//Update employee roles
+const updateEmployeeRoles = async  () =>{
+    const {emp, roleId} = await promptUser(q.employeeRoleQ())
+    console.log(emp, roleId);
+    try{
+        const c = await db.changeRole(emp, roleId);
+        console.log(c.affectedRows + " product inserted!\n")
+        start();
+    }catch(err){
+        console.error(err);
+    }
+}
+//Update employee managers
+const updateEmpManager = async () =>{
+    const {emp, manager} = await promptUser(q.changeManager())
+    console.log(emp, manager);
+    try{
+        const c = await db.changeManager(emp, manager);
+        console.log(c.affectedRows + " product inserted!\n")
+        start();
+    }catch(err){
+        console.error(err);
+    }
+}
 
 //view table by manager
 const viewEmpByMan = async () =>{
     const{manager} = await promptUser(q.askForWhatManager());
-    
-    const empByMan = await db.getTableEmployeeByManager(manager);
-    console.table(empByMan);
-    initialContact();
-
+    try{
+        const empByMan = await db.getTableEmployeeByManager(manager);
+        console.table(empByMan);
+        initialContact();
+    }catch(err){
+        console.error(err);
+    }
 }
 
 //view any table
@@ -111,6 +145,11 @@ const promptUser = (question) =>{
     return inquirer
         .prompt(question);
 }
+
+
+
+//Delete departments, roles, and employees
+
 //start function
 start();
 
