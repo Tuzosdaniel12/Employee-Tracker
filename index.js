@@ -5,7 +5,7 @@ const q = require("./lib/questions.js");
 //print table of all employees
 const start  = async () => {
     try{
-        const getAllTAbles = await db.getAllTAbles();
+        const getAllTAbles = await db.getCombinedTables();
         console.table(getAllTAbles)
         initialContact()
     }catch(err){
@@ -18,24 +18,60 @@ const initialContact = async() =>{
     const {action} = await promptUser(q.WhatWouldYouLikeToDo());
 
     switch (action) {
-        case "add_Employee":
-          addEmployee();
-          break;
-  
-        case "add_Department":
+        case "ADD_EMPLOYEES":
             addEmployee();
-          break;
+            break;
   
-        case "add_Role":
-          rangeSearch();
-          break;
+        case "ADD_DEPARTMENTS":
+            addEmployee();
+            break;
+  
+        case "ADD_ROLES":
+            rangeSearch();
+            break;
+        case "VIEW_EMPLOYEE":
+        case "VIEW_ROLE":
+        case "VIEW_DEPARTMENT":
+            if(action == "VIEW_EMPLOYEE") {
+                start() 
+                break;
+            };
+            viewTable(action.split("_").pop().toLowerCase());
+            break;
+    
+        default:
+              db.endConnection();
+            break;
         }
     
 
 }
+//add employee
 const addEmployee = async () =>{
-    const{firstName, lastName, roleId} = await promptUser(q.askEmployeeQ());
-    console.log(firstName, lastName, roleId)
+    const{firstName, lastName, roleId, managerId} = await promptUser(q.askEmployeeQ());
+ 
+    try{
+        const addedEmp = await db.addEmployee(firstName, lastName, roleId,managerId)
+        console.log(addedEmp.affectedRows + " product inserted!\n")
+        start()
+    }catch(err){
+        console.error(err);
+    }
+}
+//add role
+
+//add department
+
+//insert into employee
+
+//
+
+//view any table
+const viewTable = async (tableName) =>{
+    const table = await db.getAllTables(tableName)
+    console.table(table);
+    initialContact();
+
 }
 //ask user questions and wait for response
 const promptUser = (question) =>{
@@ -44,3 +80,4 @@ const promptUser = (question) =>{
 }
 //start function
 start();
+
