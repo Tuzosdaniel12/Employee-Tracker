@@ -56,7 +56,7 @@ Build a command-line application that at a minimum allows the user to:
 
 ## Test
 * Press Image to see video.
-[![image](images/example.png)](cooming soon)
+[![image](images/example.png)](https://drive.google.com/file/d/1Koldyz8H_Rd-muez00nDhKMjClGKVL1P/view)
 
 ## Credits
 
