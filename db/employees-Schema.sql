@@ -15,7 +15,7 @@ CREATE TABLE role(
     title VARCHAR(30),
     salary DECIMAL (10,4),
     PRIMARY KEY (id_role),
-    FOREIGN KEY (department_id) REFERENCES departament(departament_id)
+    FOREIGN KEY (department_id) REFERENCES department(department_id)
 );
 
 CREATE TABLE employee(
