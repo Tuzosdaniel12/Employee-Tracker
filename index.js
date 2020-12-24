@@ -48,7 +48,23 @@ const initialContact = async() =>{
 
         case "CHANGE_EMPLOYEEs_MANAGER":
             updateEmpManager();
+            break;
+            
+        case "REMOVE_EMPLOYEE":
+            removeEmployee();
             break; 
+
+        case "REMOVE_DEPARTMENT":
+            removeDepartment();
+            break;
+
+        case "REMOVE_ROLE":
+            removeRoles();
+            break;
+
+        case "DEPARTMENT_BUDGET":
+            budget();
+            break                   
             
         default:
               db.endConnection();
@@ -120,7 +136,55 @@ const updateEmpManager = async () =>{
         console.error(err);
     }
 }
+//departments budget
+const budget = async () =>{
+    const{id} = await promptUser(q.departmentList());
+    try{
+        const budgetTable = await db.budget(id);
+        console.table(budgetTable)
+        initialContact();
+        
+    }catch(err){
+        console.error(err);
+    }
 
+}
+//Delete departments
+const removeDepartment = async () =>{
+    const{id} = await promptUser(q.departmentList());
+    try{
+        const c = await db.removeDepartment(id);
+        console.log(c.affectedRows + " product inserted!\n")
+        viewTable("department");
+        initialContact()
+    }catch(err){
+        console.error(err);
+    }
+
+}
+//Delete roles
+const removeRoles = async () =>{
+    const{roleId} = await promptUser(q.roleList());
+    try{
+        const c = await db.removeRoles(roleId);
+        console.log(c.affectedRows + " product inserted!\n")
+        viewTable("role");
+    }catch(err){
+        console.error(err);
+    }
+} 
+//Delete employees
+const removeEmployee = async () =>{
+    const{emp} = await promptUser(q.employeeList());
+    try{
+        const c = await db.removeEmployee(emp);
+        console.log(c.affectedRows + " product inserted!\n")
+        start();
+    }catch(err){
+        console.error(err);
+    }
+
+} 
 //view table by manager
 const viewEmpByMan = async () =>{
     const{manager} = await promptUser(q.askForWhatManager());
@@ -146,9 +210,6 @@ const promptUser = (question) =>{
         .prompt(question);
 }
 
-
-
-//Delete departments, roles, and employees
 
 //start function
 start();

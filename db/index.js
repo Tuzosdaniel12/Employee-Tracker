@@ -85,6 +85,49 @@ module.exports = {
                 employee_id: emp    
             }])
     },
+    removeDepartment(deptId){
+        return connection.query(
+            `DELETE FROM department
+            WHERE ?;`,
+            [
+                {
+                    department_id: deptId,
+                }
+            ]
+        )
+    },
+    removeRoles(roleId){
+        return connection.query(
+            `DELETE FROM role
+            WHERE ?;`,
+            [
+                {
+                    id_role: roleId,
+                }
+            ]
+        )
+    },
+    removeEmployee(emp){
+        return connection.query(
+            `DELETE FROM employee
+            WHERE ?;`,
+            [
+                {
+                    employee_id: emp,
+                }
+            ]
+        )
+    },
+    budget(deptId){
+        return connection.query(
+        `SELECT d.department_name,SUM(r.salary ) as TotalBudged
+        FROM employee e
+        INNER JOIN role r
+        ON e.id_role = r.id_role
+        INNER JOIN department d
+        ON d.department_id = r.department_id
+        WHERE d.department_id = ?;`,[deptId])
+    },
     endConnection(){
         connection.end();
     }
