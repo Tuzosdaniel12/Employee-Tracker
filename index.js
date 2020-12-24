@@ -38,7 +38,9 @@ const initialContact = async() =>{
             };
             viewTable(action.split("_").pop().toLowerCase());
             break;
-    
+        case "VIEW_EMPLOYEE_BY_MANAGER":
+            viewEmpByMan();
+            break;    
         default:
               db.endConnection();
             break;
@@ -87,7 +89,15 @@ const addDepartment = async () =>{
 }
 //insert into employee
 
-//
+//view table by manager
+const viewEmpByMan = async () =>{
+    const{manager} = await promptUser(q.askForWhatManager());
+    
+    const empByMan = await db.getTableEmployeeByManager(manager);
+    console.table(empByMan);
+    initialContact();
+
+}
 
 //view any table
 const viewTable = async (tableName) =>{
