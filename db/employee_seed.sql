@@ -1,7 +1,7 @@
 USE employee_db;
 
 --add departaments 
-INSERT INTO departament(name)
+INSERT INTO department(name)
 VALUES
 ("Engineering"),
 ("Sales"),
