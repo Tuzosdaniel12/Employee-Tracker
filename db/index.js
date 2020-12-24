@@ -85,6 +85,39 @@ module.exports = {
                 employee_id: emp    
             }])
     },
+    removeDepartment(deptId){
+        return connection.query(
+            `DELETE FROM department
+            WHERE ?;`,
+            [
+                {
+                    department_id: deptId,
+                }
+            ]
+        )
+    },
+    removeRoles(roleId){
+        return connection.query(
+            `DELETE FROM role
+            WHERE ?;`,
+            [
+                {
+                    id_role: roleId,
+                }
+            ]
+        )
+    },
+    removeEmployee(emp){
+        return connection.query(
+            `DELETE FROM employee
+            WHERE ?;`,
+            [
+                {
+                    employee_id: emp,
+                }
+            ]
+        )
+    },
     endConnection(){
         connection.end();
     }
