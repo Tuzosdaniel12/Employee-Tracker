@@ -75,10 +75,10 @@ const initialContact = async() =>{
 }
 //add employee
 const addEmployee = async () =>{
-    const{firstName, lastName, roleId, managerId} = await promptUser(q.askEmployeeQ());
+    const{firstName, lastName, roleId, manager} = await promptUser(q.askEmployeeQ());
  
     try{
-        const addedEmp = await db.addEmployee(firstName, lastName, roleId,managerId)
+        const addedEmp = await db.addEmployee(firstName, lastName, roleId,manager)
         console.log(addedEmp.affectedRows + " product inserted!\n")
         start()
     }catch(err){
@@ -151,39 +151,52 @@ const budget = async () =>{
 }
 //Delete departments
 const removeDepartment = async () =>{
-    const{id} = await promptUser(q.departmentList());
-    try{
-        const c = await db.removeDepartment(id);
-        console.log(c.affectedRows + " product inserted!\n")
-        viewTable("department");
-        initialContact()
-    }catch(err){
-        console.error(err);
-    }
 
+    if (!await deleting()){
+        initialContact()
+    }else{
+        const{id} = await promptUser(q.departmentList());
+        try{
+            const c = await db.removeDepartment(id);
+            console.log(c.affectedRows + " product inserted!\n")
+            viewTable("department");
+    
+        }catch(err){
+            console.error(err);
+        }
+    }
 }
 //Delete roles
 const removeRoles = async () =>{
-    const{roleId} = await promptUser(q.roleList());
-    try{
-        const c = await db.removeRoles(roleId);
-        console.log(c.affectedRows + " product inserted!\n")
-        viewTable("role");
-    }catch(err){
-        console.error(err);
-    }
+
+    if (!await deleting()){
+        initialContact()
+    }else{
+        const{roleId} = await promptUser(q.roleList());
+        try{
+            const c = await db.removeRoles(roleId);
+            console.log(c.affectedRows + " product inserted!\n")
+            viewTable("role");
+        }catch(err){
+            console.error(err);
+        }
+    };
 } 
 //Delete employees
 const removeEmployee = async () =>{
-    const{emp} = await promptUser(q.employeeList());
-    try{
-        const c = await db.removeEmployee(emp);
-        console.log(c.affectedRows + " product inserted!\n")
-        start();
-    }catch(err){
-        console.error(err);
-    }
 
+    if (!await deleting()){
+        initialContact()
+    }else{
+        const{emp} = await promptUser(q.employeeList());
+        try{
+            const c = await db.removeEmployee(emp);
+            console.log(c.affectedRows + " product inserted!\n")
+            start();
+        }catch(err){
+            console.error(err);
+        }
+    }
 } 
 //view table by manager
 const viewEmpByMan = async () =>{
@@ -210,6 +223,10 @@ const promptUser = (question) =>{
         .prompt(question);
 }
 
+const deleting = async () =>{
+    const{answer} = await promptUser(q.deleting())
+        return answer
+}
 
 //start function
 start();
