@@ -18,13 +18,23 @@ module.exports = {
     getAllTables(tableName){
         return connection.query("SELECT * FROM ??",[tableName]);
     },
+    getTableEmployeeByManager(id){
+        return connection.query(
+        `SELECT concat(e.first_name," ",e.last_name) as employee,concat(em.first_name," ",em.last_name) as manager
+        FROM employee e
+        LEFT JOIN employee em
+        ON e.manager_id = em.employee_id
+        WHERE em.employee_id = ${id}
+        ORDER BY e.employee_id;`);
+    },
     getManager(){
         return connection.query(
         `SELECT concat(em.first_name," ",em.last_name) as manager,e.manager_id  
         FROM employee e
         LEFT JOIN employee em
         ON e.manager_id = em.employee_id
-        WHERE e.manager_id 
+        Group by e.manager_id
+        HAVING e.manager_id 
         ORDER BY e.employee_id;`);
     },
     addEmployee(name,last, id, managerId){
