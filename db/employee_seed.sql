@@ -56,3 +56,10 @@ ON d.departament_id = r.departament_id
 LEFT JOIN employee em
 ON e.manager_id = em.employee_id
 ORDER BY e.employee_id;
+
+
+            LEFT JOIN role r
+            ON e.id_role = r.id_role
+            INNER JOIN department d
+            ON d.department_id = r.department_id
+            r.title,r.salary, d.department_name,
