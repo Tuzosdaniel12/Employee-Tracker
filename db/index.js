@@ -118,6 +118,16 @@ module.exports = {
             ]
         )
     },
+    budget(deptId){
+        return connection.query(
+        `SELECT d.department_name,SUM(r.salary ) as TotalBudged
+        FROM employee e
+        INNER JOIN role r
+        ON e.id_role = r.id_role
+        INNER JOIN department d
+        ON d.department_id = r.department_id
+        WHERE d.department_id = ?;`,[deptId])
+    },
     endConnection(){
         connection.end();
     }

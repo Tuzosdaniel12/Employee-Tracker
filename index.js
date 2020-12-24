@@ -60,7 +60,11 @@ const initialContact = async() =>{
 
         case "REMOVE_ROLE":
             removeRoles();
-            break;                   
+            break;
+
+        case "DEPARTMENT_BUDGET":
+            budget();
+            break                   
             
         default:
               db.endConnection();
@@ -132,6 +136,19 @@ const updateEmpManager = async () =>{
         console.error(err);
     }
 }
+//departments budget
+const budget = async () =>{
+    const{id} = await promptUser(q.departmentList());
+    try{
+        const budgetTable = await db.budget(id);
+        console.table(budgetTable)
+        initialContact();
+        
+    }catch(err){
+        console.error(err);
+    }
+
+}
 //Delete departments
 const removeDepartment = async () =>{
     const{id} = await promptUser(q.departmentList());
@@ -139,6 +156,7 @@ const removeDepartment = async () =>{
         const c = await db.removeDepartment(id);
         console.log(c.affectedRows + " product inserted!\n")
         viewTable("department");
+        initialContact()
     }catch(err){
         console.error(err);
     }
