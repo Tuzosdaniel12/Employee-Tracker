@@ -7,11 +7,12 @@ module.exports = {
             `SELECT e.employee_id, e.first_name, e.last_name,r.title,r.salary, d.department_name, concat(em.first_name," ",em.last_name) as manager 
             FROM employee e
             INNER JOIN role r
-            ON e.id_role = r.id_role
-            INNER JOIN department d
-            ON d.department_id = r.department_id
+            ON e.id_role = r.id_role or e.id_role is null
+            LEFT JOIN department d
+            ON d.department_id = r.department_id or d.department_id is null or r.department_id is null 
             LEFT JOIN employee em
             ON e.manager_id = em.employee_id
+            GROup by e.employee_id
             ORDER BY e.employee_id;`
             );
     },
