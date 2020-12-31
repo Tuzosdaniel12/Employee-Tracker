@@ -78,7 +78,15 @@ const addEmployee = async () =>{
     const{firstName, lastName, roleId, manager} = await promptUser(q.askEmployeeQ());
  
     try{
-        const addedEmp = await db.addEmployee(firstName, lastName, roleId,manager)
+        const addedEmp = await db.addAll([
+            "employee",
+            {
+                id_role: roleId,
+                first_name: firstName,
+                last_name: lastName,
+                manager_id:manager
+            }
+        ]);
         console.log(addedEmp.affectedRows + " product inserted!\n")
         start()
     }catch(err){
@@ -90,7 +98,14 @@ const addRole = async () => {
     const{id,title,salary} = await promptUser(q.askRoleQ());
     
     try{
-        const addedRole = await db.addRole(id,title,salary)
+        const addedRole = await db.addAll([
+            "role",
+            {
+                department_id: id,
+                title: title,
+                salary: salary,
+            }
+        ])
 
         console.log(addedRole.affectedRows + " product inserted!\n")
         viewTable("role");
@@ -105,7 +120,13 @@ const addDepartment = async () =>{
     const{deptName} = await promptUser(q.askDepartmentQ());
 
     try{
-        const addedDep = await db.addDepartment(deptName);
+        const addedDep = await db.addAll([
+            "department",
+            {
+                department_name: deptName,
+            }
+
+        ]);
         console.log(addedDep.affectedRows + " product inserted!\n")
         viewTable("department");
     }catch(err){
@@ -117,7 +138,15 @@ const updateEmployeeRoles = async  () =>{
     const {emp, roleId} = await promptUser(q.employeeRoleQ())
     console.log(emp, roleId);
     try{
-        const c = await db.changeRole(emp, roleId);
+        const c = await db.changeAll(
+            [{
+                id_role: roleId
+                
+            },
+            {
+                employee_id: emp    
+            }]
+        );
         console.log(c.affectedRows + " product inserted!\n")
         start();
     }catch(err){
@@ -129,7 +158,15 @@ const updateEmpManager = async () =>{
     const {emp, manager} = await promptUser(q.changeManager())
     console.log(emp, manager);
     try{
-        const c = await db.changeManager(emp, manager);
+        const c = await db.changeAll(
+            [{
+                manager_id: manager
+                
+            },
+            {
+                employee_id: emp    
+            }]);
+            
         console.log(c.affectedRows + " product inserted!\n")
         start();
     }catch(err){
@@ -157,7 +194,14 @@ const removeDepartment = async () =>{
     }else{
         const{id} = await promptUser(q.departmentList());
         try{
-            const c = await db.removeDepartment(id);
+            const c = await db.removeAll(
+                [
+                    "department",
+                    {
+                        department_id: id,
+                    }
+                ]
+            );
             console.log(c.affectedRows + " product inserted!\n")
             viewTable("department");
     
@@ -174,7 +218,14 @@ const removeRoles = async () =>{
     }else{
         const{roleId} = await promptUser(q.roleList());
         try{
-            const c = await db.removeRoles(roleId);
+            const c = await db.removeAll(
+                [
+                    "role",
+                    {
+                        id_role: roleId,
+                    }
+                ]
+            );
             console.log(c.affectedRows + " product inserted!\n")
             viewTable("role");
         }catch(err){
@@ -190,7 +241,12 @@ const removeEmployee = async () =>{
     }else{
         const{emp} = await promptUser(q.employeeList());
         try{
-            const c = await db.removeEmployee(emp);
+            const c = await db.removeAll([
+                "employee",
+                {
+                    employee_id: emp
+                }
+            ]);
             console.log(c.affectedRows + " product inserted!\n")
             start();
         }catch(err){
