@@ -54,7 +54,7 @@ module.exports = {
     },
     budget(deptId){
         return connection.query(
-        `SELECT d.department_name,SUM(r.salary ) as TotalBudged
+        `SELECT d.department_name,SUM(r.salary ) as Total_Budget 
         FROM employee e
         INNER JOIN role r
         ON e.id_role = r.id_role
