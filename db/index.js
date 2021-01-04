@@ -38,90 +38,23 @@ module.exports = {
             HAVING e.manager_id 
             ORDER BY e.employee_id;`);
     },
-    addEmployee(name,last, id, managerId){
+    addAll(addArray){
         return connection.query(
-            `INSERT INTO employee SET?`,
-            {
-                id_role: id,
-                first_name: name,
-                last_name: last,
-                manager_id:managerId
-            });
+            `INSERT INTO ?? SET?`,addArray);
     },
-    addRole(id,title,salary){
+    changeAll(changeArray){
         return connection.query(
-            `INSERT INTO role SET?`,
-            {
-                department_id: id,
-                title: title,
-                salary: salary,
-            });
+            `UPDATE employee SET ? WHERE ?;`,changeArray)
     },
-    addDepartment(deptName){
+ 
+    removeAll(removeArray){
         return connection.query(
-            `INSERT INTO department SET?`,
-            {
-                department_name: deptName,
-            });
-    },
-    changeRole(emp, roleId){
-        return connection.query(
-            `UPDATE employee SET ? WHERE ?;`,
-            [{
-                id_role: roleId
-                
-            },
-            {
-                employee_id: emp    
-            }])
-    },
-    changeManager(emp, manager){
-        return connection.query(
-            `UPDATE employee SET ? WHERE ?;`,
-            [{
-                manager_id: manager
-                
-            },
-            {
-                employee_id: emp    
-            }])
-    },
-    removeDepartment(deptId){
-        return connection.query(
-            `DELETE FROM department
-            WHERE ?;`,
-            [
-                {
-                    department_id: deptId,
-                }
-            ]
-        )
-    },
-    removeRoles(roleId){
-        return connection.query(
-            `DELETE FROM role
-            WHERE ?;`,
-            [
-                {
-                    id_role: roleId,
-                }
-            ]
-        )
-    },
-    removeEmployee(emp){
-        return connection.query(
-            `DELETE FROM employee
-            WHERE ?;`,
-            [
-                {
-                    employee_id: emp,
-                }
-            ]
-        )
+            `DELETE FROM ??
+            WHERE ?;`, removeArray)
     },
     budget(deptId){
         return connection.query(
-        `SELECT d.department_name,SUM(r.salary ) as TotalBudged
+        `SELECT d.department_name,SUM(r.salary ) as Total_Budget 
         FROM employee e
         INNER JOIN role r
         ON e.id_role = r.id_role

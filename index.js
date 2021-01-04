@@ -4,9 +4,16 @@ const q = require("./lib/questions.js");
 
 //print table of all employees
 const start  = async () => {
+    console.clear()
     try{
         const getAllTAbles = await db.getCombinedTables();
-        console.table(getAllTAbles)
+        console.log(getAllTAbles.length)
+        if(getAllTAbles.length === 0){
+            console.log("\x1b[31m Looks like your employee list is empty, you must add a department then a role before adding a employee")
+        }else{
+            console.table(getAllTAbles)
+        }
+        
         initialContact()
     }catch(err){
         console.error(err);
@@ -75,72 +82,68 @@ const initialContact = async() =>{
 }
 //add employee
 const addEmployee = async () =>{
-    const{firstName, lastName, roleId, manager} = await promptUser(q.askEmployeeQ());
- 
-    try{
-        const addedEmp = await db.addEmployee(firstName, lastName, roleId,manager)
-        console.log(addedEmp.affectedRows + " product inserted!\n")
-        start()
-    }catch(err){
-        console.error(err);
-    }
+    let{firstName, lastName, roleId, manager} = await promptUser(q.askEmployeeQ());
+    if(manager === "null")manager = null;
+    removeOrAddAll("employee",
+            {
+                id_role: roleId,
+                first_name: firstName,
+                last_name: lastName,
+                manager_id:manager
+            },db.addAll);      
 }
+
 //add role
 const addRole = async () => {
     const{id,title,salary} = await promptUser(q.askRoleQ());
     
-    try{
-        const addedRole = await db.addRole(id,title,salary)
-
-        console.log(addedRole.affectedRows + " product inserted!\n")
-        viewTable("role");
-
-    }catch(err){
-        console.error(err);
-    }
-
+    removeOrAddAll("role",
+            {
+                department_id: id,
+                title: title,
+                salary: salary,
+            },db.addAll);
 }
+
 //add department
 const addDepartment = async () =>{
     const{deptName} = await promptUser(q.askDepartmentQ());
 
-    try{
-        const addedDep = await db.addDepartment(deptName);
-        console.log(addedDep.affectedRows + " product inserted!\n")
-        viewTable("department");
-    }catch(err){
-        console.error(err);
-    }
+    removeOrAddAll("department",
+            {
+                department_name: deptName,
+            },db.addAll);      
 }
+
 //Update employee roles
 const updateEmployeeRoles = async  () =>{
-    const {emp, roleId} = await promptUser(q.employeeRoleQ())
-    console.log(emp, roleId);
-    try{
-        const c = await db.changeRole(emp, roleId);
-        console.log(c.affectedRows + " product inserted!\n")
-        start();
-    }catch(err){
-        console.error(err);
+    let {emp, roleId} = await promptUser(q.employeeRoleQ())
+    if(emp === "null"){
+        console.clear()
+        initialContact();
+    }else{
+        updateAll([{ id_role: roleId},{employee_id: emp}]);
     }
 }
+
 //Update employee managers
 const updateEmpManager = async () =>{
-    const {emp, manager} = await promptUser(q.changeManager())
-    console.log(emp, manager);
-    try{
-        const c = await db.changeManager(emp, manager);
-        console.log(c.affectedRows + " product inserted!\n")
-        start();
-    }catch(err){
-        console.error(err);
-    }
+    let {emp, manager} = await promptUser(q.changeManager())
+    if(emp === "null" ){
+        console.clear()
+        initialContact();
+    }else{
+        if(manager === "null")manager = null;
+        updateAll([{manager_id: manager},{employee_id: emp}]);
+    }  
 }
+
 //departments budget
 const budget = async () =>{
     const{id} = await promptUser(q.departmentList());
     try{
         const budgetTable = await db.budget(id);
+        console.clear()
         console.table(budgetTable)
         initialContact();
         
@@ -152,67 +155,67 @@ const budget = async () =>{
 //Delete departments
 const removeDepartment = async () =>{
 
-    if (!await deleting()){
+    if (!deleting()){
+        console.clear()
         initialContact()
     }else{
         const{id} = await promptUser(q.departmentList());
-        try{
-            const c = await db.removeDepartment(id);
-            console.log(c.affectedRows + " product inserted!\n")
-            viewTable("department");
-    
-        }catch(err){
-            console.error(err);
-        }
+        removeOrAddAll("department",{department_id: id,},db.removeAll);
     }
 }
+
 //Delete roles
 const removeRoles = async () =>{
 
-    if (!await deleting()){
+    if (!deleting()){
+        console.clear()
         initialContact()
     }else{
         const{roleId} = await promptUser(q.roleList());
-        try{
-            const c = await db.removeRoles(roleId);
-            console.log(c.affectedRows + " product inserted!\n")
-            viewTable("role");
-        }catch(err){
-            console.error(err);
-        }
+
+        removeOrAddAll("role",{ id_role: roleId },db.removeAll);
     };
 } 
 //Delete employees
 const removeEmployee = async () =>{
-
-    if (!await deleting()){
+    if (!deleting()){
+        console.clear()
         initialContact()
     }else{
-        const{emp} = await promptUser(q.employeeList());
-        try{
-            const c = await db.removeEmployee(emp);
-            console.log(c.affectedRows + " product inserted!\n")
-            start();
-        }catch(err){
-            console.error(err);
-        }
+        let{emp} = await promptUser(q.employeeList());
+        if(emp === "null"){
+            console.clear()
+            initialContact()
+        }else{
+            removeOrAddAll("employee",{ employee_id: emp },db.removeAll);
+        }  
     }
 } 
 //view table by manager
 const viewEmpByMan = async () =>{
-    const{manager} = await promptUser(q.askForWhatManager());
-    try{
-        const empByMan = await db.getTableEmployeeByManager(manager);
-        console.table(empByMan);
-        initialContact();
-    }catch(err){
-        console.error(err);
+    //check if any managers are assign to employees
+    let m = await db.getManager();
+    if(m.length !== 0){
+        const{manager} = await promptUser(q.askForWhatManager());
+        try{
+            const empByMan = await db.getTableEmployeeByManager(manager);
+            console.clear()
+            console.table(empByMan);
+            initialContact();
+        }catch(err){
+            console.error(err);
+        }
+    }else{
+        console.error("\x1b[31m No Managers Available")
+        start();
     }
+    
 }
 
 //view any table
 const viewTable = async (tableName) =>{
     const table = await db.getAllTables(tableName)
+    console.clear()
     console.table(table);
     initialContact();
 
@@ -228,6 +231,38 @@ const deleting = async () =>{
         return answer
 }
 
+//remove all table
+const removeOrAddAll = async (tableName,object,actionFunction) =>{
+    try{
+        const c = await actionFunction(
+            [
+                tableName,
+                object
+            ]
+        );
+        console.log(c.affectedRows + " product inserted!\n")
+        if(tableName === "employee"){
+            start()
+        }else{
+            console.clear()
+            viewTable(tableName);
+        }
+        
+
+    }catch(err){
+        console.error(err);
+    }
+}
+
+const updateAll = async  (arrayOfObject) =>{
+    try{
+        const c = await db.changeAll(arrayOfObject);
+        console.log(c.affectedRows + " product inserted!\n")
+        start();
+    }catch(err){
+        console.error(err);
+    }
+}
 //start function
 start();
 
