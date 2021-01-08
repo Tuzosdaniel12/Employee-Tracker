@@ -47,19 +47,15 @@ SELECT * FROM employess
 --use this to have a nice TABLE 
 USE employee_db;
 
-SELECT e.employee_id, e.first_name, e.last_name,r.title,r.salary, d.departament_name, concat(em.first_name," ",em.last_name) as manager 
+SELECT e.employee_id, e.first_name, e.last_name,r.title,r.salary, d.department_name, concat(em.first_name," ",em.last_name) as manager 
 FROM employee e
 INNER JOIN role r
-ON e.id_role = r.id_role
-INNER JOIN departament d
-ON d.departament_id = r.departament_id
+ON e.id_role = r.id_role OR e.id_role is null
+LEFT JOIN department d
+ON d.department_id = r.department_id OR d.department_id is null OR r.department_id is null 
 LEFT JOIN employee em
 ON e.manager_id = em.employee_id
+GROUP by e.employee_id
 ORDER BY e.employee_id;
 
 
-            LEFT JOIN role r
-            ON e.id_role = r.id_role
-            INNER JOIN department d
-            ON d.department_id = r.department_id
-            r.title,r.salary, d.department_name,

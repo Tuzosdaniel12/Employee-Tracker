@@ -12,7 +12,6 @@ module.exports = {
             ON d.department_id = r.department_id OR d.department_id is null OR r.department_id is null 
             LEFT JOIN employee em
             ON e.manager_id = em.employee_id
-            GROUP by e.employee_id
             ORDER BY e.employee_id;`
             );
     },
@@ -30,13 +29,12 @@ module.exports = {
     },
     getManager(){
         return connection.query(
-            `SELECT concat(em.first_name," ",em.last_name) as manager,e.manager_id  
+            `USE employee_db;
+            SELECT DISTINCT concat(em.first_name," ",em.last_name) as manager,e.manager_id  
             FROM employee e
-            LEFT JOIN employee em
+            INNER JOIN employee em
             ON e.manager_id = em.employee_id
-            Group by e.manager_id
-            HAVING e.manager_id 
-            ORDER BY e.employee_id;`);
+            ORDER BY e.employee_id`);
     },
     addAll(addArray){
         return connection.query(
