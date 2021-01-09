@@ -29,8 +29,7 @@ module.exports = {
     },
     getManager(){
         return connection.query(
-            `USE employee_db;
-            SELECT DISTINCT concat(em.first_name," ",em.last_name) as manager,e.manager_id  
+            `SELECT DISTINCT concat(em.first_name," ",em.last_name) as manager,e.manager_id  
             FROM employee e
             INNER JOIN employee em
             ON e.manager_id = em.employee_id
